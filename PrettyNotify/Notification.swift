@@ -15,12 +15,14 @@ public class Notification{
     var primaryButtonAction: (()->())? = nil
     var secondaryButtonText: String? = nil
     var secondaryButtonAction: (()->())? = nil
-    var dismissGestureRecognizer: UIGestureRecognizer? = nil
+    var showIcon: Bool = false
     var parentVC: UIViewController?
-    var context: NotificationType? = nil
+    var theme: Theme? = nil
+    var timeout: Int? = nil
     var view: UIView = UIView()
-    
-    lazy var contentStackView: UIStackView = {
+    var app: UIApplication?
+
+    var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -28,7 +30,7 @@ public class Notification{
         return stackView
     }()
     
-    lazy var buttonStackView: UIStackView = {
+    var buttonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -39,15 +41,41 @@ public class Notification{
     public func show(){
         setupView()
         if let vc = parentVC{
-            print("\(String(describing: title))\n\(String(describing: subtitle))")
+            view.alpha = 0.0
             vc.view.addSubview(view)
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.alpha = 1.0
+            }) { (finished) in
+                if finished{
+                    if let timeout = self.timeout{
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(timeout)) {
+                            self.dismissView()
+                        }
+                    }
+                }
+            }
         }
     }
     
+    func dismissView(fastDismiss: Bool = false){
+        UIView.animate(withDuration: fastDismiss ? 0.1 : 0.5, animations: {
+            self.view.alpha = 0.0
+        }) { (finished) in
+            if finished{
+                self.view.removeFromSuperview()
+            }
+        }
+    }
+    
+    func dismissGestureRecognizer(){
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe))
+        swipeUp.direction = .up
+        view.addGestureRecognizer(swipeUp)
+    }
     
     func setupView(){
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor(rgb: 0x9C64A6)
+        view.backgroundColor = UIColor(rgb: theme?.color ?? 0x9C64A6)
         setupLabels()
         setupButtons()
         contentStackView.addArrangedSubview(buttonStackView)
@@ -70,25 +98,8 @@ public class Notification{
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        //view.addSubview(titleLabel)
-        //view.addSubview(subtitleLabel)
-        
         contentStackView.addArrangedSubview(titleLabel)
         contentStackView.addArrangedSubview(subtitleLabel)
-        
-//        titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 15).isActive = true
-//        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
-//        titleLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
-//
-        if subtitle != nil{
-//            titleLabel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3, constant: -10).isActive = true
-//            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-//            subtitleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
-//            subtitleLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
-//            subtitleLabel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3, constant: -20).isActive = true
-        }else{
-//            titleLabel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1, constant: -25).isActive = true
-        }
     }
     
     func setupButtons(){
@@ -100,33 +111,29 @@ public class Notification{
         secondaryButton.addTarget(self, action: #selector(handleSecondaryButton), for: .touchUpInside)
         if let primaryButtonText = primaryButtonText{
             primaryButton.setTitle(primaryButtonText, for: .normal)
-            
             buttonStackView.addArrangedSubview(primaryButton)
-//            primaryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-//            primaryButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-//            primaryButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
-//            primaryButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3).isActive = true
         }
         if let secondaryButtonText = secondaryButtonText{
             secondaryButton.setTitle(secondaryButtonText, for: .normal)
-            
             buttonStackView.addArrangedSubview(secondaryButton)
-//            secondaryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-//            secondaryButton.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-//            secondaryButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
-//            secondaryButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3).isActive = true
         }
+    }
+    
+    @objc func handleSwipe(){
+        dismissView(fastDismiss: true)
     }
     
     @objc func handlePrimaryButton(){
         if let primaryButtonAction = primaryButtonAction{
             primaryButtonAction()
+            dismissView()
         }
     }
     
     @objc func handleSecondaryButton(){
         if let secondaryButtonAction = secondaryButtonAction{
             secondaryButtonAction()
+            dismissView()
         }
     }
     

@@ -10,7 +10,8 @@ import Foundation
 
 public class NotificationBuilder{
     static var notification = Notification()
-    private init() {}
+    
+    private init(){}
     
     public static func setTitle(_ title: String) -> NotificationBuilder.Type{
         notification.title = title
@@ -22,8 +23,30 @@ public class NotificationBuilder{
         return self
     }
     
+    public static func showIcon() -> NotificationBuilder.Type {
+        notification.showIcon = true
+        return self
+    }
+    
     public static func build() -> Notification{
+        let notification = self.notification
+        self.notification = Notification()
         return notification
+    }
+    
+    public static func setTheme(_ theme: Theme) -> NotificationBuilder.Type{
+        notification.theme = theme
+        return self
+    }
+    
+    public static func setTimeout(_ timeout: Int) -> NotificationBuilder.Type{
+        notification.timeout = timeout
+        return self
+    }
+    
+    public static func isDismissable() -> NotificationBuilder.Type{
+        notification.dismissGestureRecognizer()
+        return self
     }
     
     public static func setPrimaryButton(text: String, action: @escaping ()->()) -> NotificationBuilder.Type{
@@ -39,7 +62,9 @@ public class NotificationBuilder{
     }
     
     public static func setCurrentViewController(_ vc: UIViewController) -> NotificationBuilder.Type{
-        notification.parentVC = vc
+        if let rootView = UIApplication.shared.keyWindow?.rootViewController{
+            notification.parentVC = rootView
+        }
         return self
     }
 }

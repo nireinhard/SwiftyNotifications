@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		43CF5CE722CB80A500FA08CE /* PrettyNotify.h in Headers */ = {isa = PBXBuildFile; fileRef = 43CF5CE522CB80A500FA08CE /* PrettyNotify.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		43E3848922CB82160073F26A /* PrettyNotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3848822CB82160073F26A /* PrettyNotify.swift */; };
 		43E3849322CBBEB60073F26A /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849222CBBEB60073F26A /* Notification.swift */; };
 		43E3849522CBBF550073F26A /* NotificationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849422CBBF550073F26A /* NotificationBuilder.swift */; };
 		43E3849722CBCC740073F26A /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849622CBCC740073F26A /* Helpers.swift */; };
@@ -19,7 +18,6 @@
 		43CF5CE222CB80A500FA08CE /* PrettyNotify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PrettyNotify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CF5CE522CB80A500FA08CE /* PrettyNotify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrettyNotify.h; sourceTree = "<group>"; };
 		43CF5CE622CB80A500FA08CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		43E3848822CB82160073F26A /* PrettyNotify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrettyNotify.swift; sourceTree = "<group>"; };
 		43E3849222CBBEB60073F26A /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		43E3849422CBBF550073F26A /* NotificationBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBuilder.swift; sourceTree = "<group>"; };
 		43E3849622CBCC740073F26A /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -59,7 +57,6 @@
 			children = (
 				43CF5CE522CB80A500FA08CE /* PrettyNotify.h */,
 				43CF5CE622CB80A500FA08CE /* Info.plist */,
-				43E3848822CB82160073F26A /* PrettyNotify.swift */,
 				EDDE9054636C1980BBEB775E /* NotifcationType.swift */,
 				43E3849222CBBEB60073F26A /* Notification.swift */,
 				43E3849422CBBF550073F26A /* NotificationBuilder.swift */,
@@ -154,7 +151,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43E3848922CB82160073F26A /* PrettyNotify.swift in Sources */,
 				EDDE959F494EF3A5B9D107FC /* NotifcationType.swift in Sources */,
 				43E3849522CBBF550073F26A /* NotificationBuilder.swift in Sources */,
 				43E3849722CBCC740073F26A /* Helpers.swift in Sources */,
