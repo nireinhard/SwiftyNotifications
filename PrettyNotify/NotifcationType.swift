@@ -6,13 +6,14 @@
 import Foundation
 
 public struct Theme{
-    let color: Int
+    let primaryColor: Int
+    let secondaryColor: Int
     let icon: String
 }
 
 public struct NotificationType{
-    public static let info = Theme(color: 0x2980B9, icon: "")
-    public static let error = Theme(color: 0xE74C3C, icon: "")
-    public static let warning = Theme(color: 0xF39C12, icon: "")
-    public static let success = Theme(color: 0x27AE60, icon: "")
+    public static let info = Theme(primaryColor: 0x2980B9, secondaryColor: 0x2576AC, icon: "")
+    public static let error = Theme(primaryColor: 0xE74C3C, secondaryColor: 0xCC302B, icon: "")
+    public static let warning = Theme(primaryColor: 0xF39C12, secondaryColor: 0xea9512, icon: "")
+    public static let success = Theme(primaryColor: 0x27AE60, secondaryColor: 0x229E58, icon: "")
 }

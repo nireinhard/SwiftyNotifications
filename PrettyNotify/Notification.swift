@@ -27,6 +27,7 @@ public class Notification{
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.distribution = .fillProportionally
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -34,6 +35,7 @@ public class Notification{
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
+        stackView.spacing = 10
         stackView.distribution = .fillEqually
         return stackView
     }()
@@ -75,10 +77,20 @@ public class Notification{
     
     func setupView(){
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor(rgb: theme?.color ?? 0x9C64A6)
+        view.backgroundColor = UIColor(rgb: theme?.primaryColor ?? 0x9C64A6)
+        setupShadow()
         setupLabels()
         setupButtons()
-        contentStackView.addArrangedSubview(buttonStackView)
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.addArrangedSubview(containerView)
+        containerView.rightAnchor.constraint(equalTo: contentStackView.rightAnchor).isActive = true
+        containerView.leftAnchor.constraint(equalTo: contentStackView.leftAnchor).isActive = true
+        containerView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        containerView.addSubview(buttonStackView)
+        buttonStackView.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        buttonStackView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        buttonStackView.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
         view.addSubview(contentStackView)
         contentStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
         contentStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
@@ -87,9 +99,18 @@ public class Notification{
         setupViewConstraints()
     }
     
+    func setupShadow(){
+        view.layer.shadowColor = UIColor.gray.cgColor
+        view.layer.shadowOpacity = 0.3
+        view.layer.shadowOffset = CGSize(width: 3, height: 3)
+        view.layer.shadowRadius = 6
+    }
+    
     func setupLabels(){
         let titleLabel = UILabel()
         let subtitleLabel = UILabel()
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.lineBreakMode = .byWordWrapping
         titleLabel.text = title
         titleLabel.font = UIFont.boldSystemFont(ofSize: 25)
         titleLabel.textColor = .white
@@ -97,7 +118,6 @@ public class Notification{
         subtitleLabel.textColor = .white
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         contentStackView.addArrangedSubview(titleLabel)
         contentStackView.addArrangedSubview(subtitleLabel)
     }
@@ -109,6 +129,12 @@ public class Notification{
         secondaryButton.translatesAutoresizingMaskIntoConstraints = false
         primaryButton.addTarget(self, action: #selector(handlePrimaryButton), for: .touchUpInside)
         secondaryButton.addTarget(self, action: #selector(handleSecondaryButton), for: .touchUpInside)
+        primaryButton.layer.cornerRadius = 10
+        secondaryButton.layer.cornerRadius = 10
+        if let theme = theme{
+            primaryButton.backgroundColor = UIColor(rgb: theme.secondaryColor)
+            secondaryButton.backgroundColor = UIColor(rgb: theme.secondaryColor)
+        }
         if let primaryButtonText = primaryButtonText{
             primaryButton.setTitle(primaryButtonText, for: .normal)
             buttonStackView.addArrangedSubview(primaryButton)
@@ -126,21 +152,26 @@ public class Notification{
     @objc func handlePrimaryButton(){
         if let primaryButtonAction = primaryButtonAction{
             primaryButtonAction()
-            dismissView()
         }
+        dismissView()
     }
     
     @objc func handleSecondaryButton(){
         if let secondaryButtonAction = secondaryButtonAction{
             secondaryButtonAction()
-            dismissView()
         }
+        dismissView()
     }
     
     func calculateViewHeight() -> CGFloat{
+        var childHeight: CGFloat = 0
+        for child in view.subviews{
+            childHeight += child.frame.height
+        }
+        print(childHeight)
         var height: Float = 80.0
         if primaryButtonText != nil || secondaryButtonText != nil{
-            height = 120.0
+            height = 200
         }
         return CGFloat(height)
     }
@@ -152,7 +183,7 @@ public class Notification{
             view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor).isActive = true
             view.rightAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
             view.leftAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
-            view.heightAnchor.constraint(equalToConstant: calculateViewHeight()).isActive = true
+            view.setContentHuggingPriority(.init(1000), for: .vertical)
         }
     }
 }
