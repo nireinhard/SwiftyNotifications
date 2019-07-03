@@ -28,6 +28,11 @@ public class NotificationBuilder{
         return self
     }
     
+    public static func setCompletionHandler(completion: @escaping (DismissType)->()) -> NotificationBuilder.Type{
+        notification.completion = completion
+        return self
+    }
+    
     public static func build() -> Notification{
         let notification = self.notification
         self.notification = Notification()

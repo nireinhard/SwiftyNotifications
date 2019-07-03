@@ -11,6 +11,7 @@
 		43E3849322CBBEB60073F26A /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849222CBBEB60073F26A /* Notification.swift */; };
 		43E3849522CBBF550073F26A /* NotificationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849422CBBF550073F26A /* NotificationBuilder.swift */; };
 		43E3849722CBCC740073F26A /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849622CBCC740073F26A /* Helpers.swift */; };
+		43E3849922CCAF5A0073F26A /* DismissType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849822CCAF5A0073F26A /* DismissType.swift */; };
 		EDDE959F494EF3A5B9D107FC /* NotifcationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDE9054636C1980BBEB775E /* NotifcationType.swift */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +22,7 @@
 		43E3849222CBBEB60073F26A /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		43E3849422CBBF550073F26A /* NotificationBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBuilder.swift; sourceTree = "<group>"; };
 		43E3849622CBCC740073F26A /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		43E3849822CCAF5A0073F26A /* DismissType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissType.swift; sourceTree = "<group>"; };
 		EDDE9054636C1980BBEB775E /* NotifcationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifcationType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +63,7 @@
 				43E3849222CBBEB60073F26A /* Notification.swift */,
 				43E3849422CBBF550073F26A /* NotificationBuilder.swift */,
 				43E3849622CBCC740073F26A /* Helpers.swift */,
+				43E3849822CCAF5A0073F26A /* DismissType.swift */,
 			);
 			path = PrettyNotify;
 			sourceTree = "<group>";
@@ -151,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43E3849922CCAF5A0073F26A /* DismissType.swift in Sources */,
 				EDDE959F494EF3A5B9D107FC /* NotifcationType.swift in Sources */,
 				43E3849522CBBF550073F26A /* NotificationBuilder.swift in Sources */,
 				43E3849722CBCC740073F26A /* Helpers.swift in Sources */,

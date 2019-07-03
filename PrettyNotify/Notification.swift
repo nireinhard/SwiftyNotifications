@@ -20,8 +20,12 @@ public class Notification{
     var theme: Theme? = nil
     var timeout: Int? = nil
     var view: UIView = UIView()
-    var app: UIApplication?
-
+    var completion: ((DismissType)->())? = nil
+    
+    private lazy var dismissViewTimeoutReached = DispatchWorkItem(block: {
+        self.dismissView(.timeoutReached)
+    })
+    
     var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -50,21 +54,21 @@ public class Notification{
             }) { (finished) in
                 if finished{
                     if let timeout = self.timeout{
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(timeout)) {
-                            self.dismissView()
-                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(timeout), execute: self.dismissViewTimeoutReached)
                     }
                 }
             }
         }
     }
     
-    func dismissView(fastDismiss: Bool = false){
+    func dismissView(fastDismiss: Bool = false, _ dismissType: DismissType){
         UIView.animate(withDuration: fastDismiss ? 0.1 : 0.5, animations: {
             self.view.alpha = 0.0
         }) { (finished) in
             if finished{
                 self.view.removeFromSuperview()
+                self.dismissViewTimeoutReached.cancel()
+                self.completion?(dismissType)
             }
         }
     }
@@ -81,16 +85,6 @@ public class Notification{
         setupShadow()
         setupLabels()
         setupButtons()
-        let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        contentStackView.addArrangedSubview(containerView)
-        containerView.rightAnchor.constraint(equalTo: contentStackView.rightAnchor).isActive = true
-        containerView.leftAnchor.constraint(equalTo: contentStackView.leftAnchor).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        containerView.addSubview(buttonStackView)
-        buttonStackView.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-        buttonStackView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-        buttonStackView.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
         view.addSubview(contentStackView)
         contentStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
         contentStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
@@ -123,6 +117,9 @@ public class Notification{
     }
     
     func setupButtons(){
+        guard primaryButtonText != nil || secondaryButtonText != nil else {
+            return
+        }
         let primaryButton = UIButton()
         let secondaryButton = UIButton()
         primaryButton.translatesAutoresizingMaskIntoConstraints = false
@@ -143,24 +140,34 @@ public class Notification{
             secondaryButton.setTitle(secondaryButtonText, for: .normal)
             buttonStackView.addArrangedSubview(secondaryButton)
         }
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.addArrangedSubview(containerView)
+        containerView.rightAnchor.constraint(equalTo: contentStackView.rightAnchor).isActive = true
+        containerView.leftAnchor.constraint(equalTo: contentStackView.leftAnchor).isActive = true
+        containerView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        containerView.addSubview(buttonStackView)
+        buttonStackView.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        buttonStackView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        buttonStackView.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
     }
     
     @objc func handleSwipe(){
-        dismissView(fastDismiss: true)
+        dismissView(fastDismiss: true, .swipeUp)
     }
     
     @objc func handlePrimaryButton(){
         if let primaryButtonAction = primaryButtonAction{
             primaryButtonAction()
         }
-        dismissView()
+        dismissView(.primaryButtonTapped)
     }
     
     @objc func handleSecondaryButton(){
         if let secondaryButtonAction = secondaryButtonAction{
             secondaryButtonAction()
         }
-        dismissView()
+        dismissView(.secondaryButtonTapped)
     }
     
     func calculateViewHeight() -> CGFloat{
@@ -180,7 +187,7 @@ public class Notification{
         if let parentVC = parentVC{
             parentVC.view.addSubview(view)
             view.translatesAutoresizingMaskIntoConstraints = false
-            view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor).isActive = true
+            view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
             view.rightAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
             view.leftAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.setContentHuggingPriority(.init(1000), for: .vertical)
