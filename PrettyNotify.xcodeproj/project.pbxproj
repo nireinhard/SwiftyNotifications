@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		433AFD0022CCD465002AC687 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 433AFCFF22CCD465002AC687 /* Images.xcassets */; };
+		433AFD0322CCD5F4002AC687 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 433AFD0222CCD5F4002AC687 /* close.png */; };
 		43CF5CE722CB80A500FA08CE /* PrettyNotify.h in Headers */ = {isa = PBXBuildFile; fileRef = 43CF5CE522CB80A500FA08CE /* PrettyNotify.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		43E3849322CBBEB60073F26A /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849222CBBEB60073F26A /* Notification.swift */; };
 		43E3849522CBBF550073F26A /* NotificationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3849422CBBF550073F26A /* NotificationBuilder.swift */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		433AFCFF22CCD465002AC687 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		433AFD0222CCD5F4002AC687 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = ../../../close.png; sourceTree = "<group>"; };
 		43CF5CE222CB80A500FA08CE /* PrettyNotify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PrettyNotify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CF5CE522CB80A500FA08CE /* PrettyNotify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrettyNotify.h; sourceTree = "<group>"; };
 		43CF5CE622CB80A500FA08CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -37,6 +41,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		433AFD0122CCD5E4002AC687 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				433AFD0222CCD5F4002AC687 /* close.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 		43CF5CD822CB80A500FA08CE = {
 			isa = PBXGroup;
 			children = (
@@ -57,6 +69,7 @@
 		43CF5CE422CB80A500FA08CE /* PrettyNotify */ = {
 			isa = PBXGroup;
 			children = (
+				433AFD0122CCD5E4002AC687 /* Images */,
 				43CF5CE522CB80A500FA08CE /* PrettyNotify.h */,
 				43CF5CE622CB80A500FA08CE /* Info.plist */,
 				EDDE9054636C1980BBEB775E /* NotifcationType.swift */,
@@ -64,6 +77,7 @@
 				43E3849422CBBF550073F26A /* NotificationBuilder.swift */,
 				43E3849622CBCC740073F26A /* Helpers.swift */,
 				43E3849822CCAF5A0073F26A /* DismissType.swift */,
+				433AFCFF22CCD465002AC687 /* Images.xcassets */,
 			);
 			path = PrettyNotify;
 			sourceTree = "<group>";
@@ -144,6 +158,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				433AFD0322CCD5F4002AC687 /* close.png in Resources */,
+				433AFD0022CCD465002AC687 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

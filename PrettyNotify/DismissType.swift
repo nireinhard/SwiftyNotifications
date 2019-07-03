@@ -13,4 +13,5 @@ public enum DismissType{
     case secondaryButtonTapped
     case timeoutReached
     case swipeUp
+    case closeTapped
 }

@@ -44,6 +44,19 @@ public class Notification{
         return stackView
     }()
     
+    lazy var closeItemImageView: UIButton = {
+        let imageView = UIButton()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let bundle = Bundle(identifier: "NiklasR.PrettyNotify")
+        let path = bundle?.path(forResource: "close", ofType: "png")
+        let data = NSData(contentsOfFile: path!)
+        if let data = data as Data?{
+            imageView.setImage(UIImage(data: data), for: .normal)
+            imageView.addTarget(self, action: #selector(closeButtonTappedAction), for: .touchUpInside)
+        }
+        return imageView
+    }()
+    
     public func show(){
         setupView()
         if let vc = parentVC{
@@ -61,6 +74,7 @@ public class Notification{
         }
     }
     
+
     func dismissView(fastDismiss: Bool = false, _ dismissType: DismissType){
         UIView.animate(withDuration: fastDismiss ? 0.1 : 0.5, animations: {
             self.view.alpha = 0.0
@@ -72,6 +86,7 @@ public class Notification{
             }
         }
     }
+    
     
     func dismissGestureRecognizer(){
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe))
@@ -86,7 +101,7 @@ public class Notification{
         setupLabels()
         setupButtons()
         view.addSubview(contentStackView)
-        contentStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        contentStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 15).isActive = true
         contentStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
         contentStackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
         contentStackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
@@ -112,7 +127,18 @@ public class Notification{
         subtitleLabel.textColor = .white
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentStackView.addArrangedSubview(titleLabel)
+        
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.distribution = .fillProportionally
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(closeItemImageView)
+        
+        closeItemImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        closeItemImageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        
+        contentStackView.addArrangedSubview(stackView)
         contentStackView.addArrangedSubview(subtitleLabel)
     }
     
@@ -150,6 +176,10 @@ public class Notification{
         buttonStackView.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
         buttonStackView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         buttonStackView.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
+    }
+    
+    @objc func closeButtonTappedAction(){
+        dismissView(.closeTapped)
     }
     
     @objc func handleSwipe(){
