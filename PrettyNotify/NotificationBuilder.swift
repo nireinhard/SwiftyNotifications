@@ -9,7 +9,7 @@
 import Foundation
 
 public class NotificationBuilder{
-    static var notification = Notification()
+    static var notification: Notification = Notification()
     
     private init(){}
     
@@ -24,7 +24,7 @@ public class NotificationBuilder{
     }
     
     public static func showIcon() -> NotificationBuilder.Type {
-        notification.showIcon = true
+        print("yet to be implemented...")
         return self
     }
     
@@ -34,9 +34,13 @@ public class NotificationBuilder{
     }
     
     public static func build() -> Notification{
-        let notification = self.notification
+        if notification.timeout == nil{
+            notification.timeout = 10_000
+        }
+        setCurrentViewController()
+        let n = self.notification
         self.notification = Notification()
-        return notification
+        return n
     }
     
     public static func setTheme(_ theme: Theme) -> NotificationBuilder.Type{
@@ -66,10 +70,9 @@ public class NotificationBuilder{
         return self
     }
     
-    public static func setCurrentViewController(_ vc: UIViewController) -> NotificationBuilder.Type{
+    static func setCurrentViewController() {
         if let rootView = UIApplication.shared.keyWindow?.rootViewController{
             notification.parentVC = rootView
         }
-        return self
     }
 }

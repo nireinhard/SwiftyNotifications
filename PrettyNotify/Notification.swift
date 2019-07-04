@@ -44,17 +44,19 @@ public class Notification{
         return stackView
     }()
     
-    lazy var closeItemImageView: UIButton = {
-        let imageView = UIButton()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+    lazy var closeItemButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
         let bundle = Bundle(identifier: "NiklasR.PrettyNotify")
         let path = bundle?.path(forResource: "close", ofType: "png")
         let data = NSData(contentsOfFile: path!)
         if let data = data as Data?{
-            imageView.setImage(UIImage(data: data), for: .normal)
-            imageView.addTarget(self, action: #selector(closeButtonTappedAction), for: .touchUpInside)
+            button.setImage(UIImage(data: data), for: .normal)
+            button.addTarget(self, action: #selector(closeButtonTappedAction), for: .touchUpInside)
         }
-        return imageView
+        button.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        return button
     }()
     
     public func show(){
@@ -133,12 +135,14 @@ public class Notification{
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.distribution = .fillProportionally
         stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(closeItemImageView)
-        
-        closeItemImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
-        closeItemImageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        stackView.addArrangedSubview(closeItemButton)
         
         contentStackView.addArrangedSubview(stackView)
+        
+        stackView.topAnchor.constraint(equalTo: contentStackView.topAnchor).isActive = true
+        stackView.leftAnchor.constraint(equalTo: contentStackView.leftAnchor).isActive = true
+        stackView.rightAnchor.constraint(equalTo: contentStackView.rightAnchor).isActive = true
+        
         contentStackView.addArrangedSubview(subtitleLabel)
     }
     
@@ -150,8 +154,8 @@ public class Notification{
         let secondaryButton = UIButton()
         primaryButton.translatesAutoresizingMaskIntoConstraints = false
         secondaryButton.translatesAutoresizingMaskIntoConstraints = false
-        primaryButton.addTarget(self, action: #selector(handlePrimaryButton), for: .touchUpInside)
-        secondaryButton.addTarget(self, action: #selector(handleSecondaryButton), for: .touchUpInside)
+        primaryButton.addTarget(self, action: #selector(handlePrimaryButton(sender:)), for: .touchUpInside)
+        secondaryButton.addTarget(self, action: #selector(handleSecondaryButton(sender:)), for: .touchUpInside)
         primaryButton.layer.cornerRadius = 10
         secondaryButton.layer.cornerRadius = 10
         if let theme = theme{
@@ -186,31 +190,18 @@ public class Notification{
         dismissView(fastDismiss: true, .swipeUp)
     }
     
-    @objc func handlePrimaryButton(){
+    @objc func handlePrimaryButton(sender: Any){
         if let primaryButtonAction = primaryButtonAction{
             primaryButtonAction()
         }
         dismissView(.primaryButtonTapped)
     }
     
-    @objc func handleSecondaryButton(){
+    @objc func handleSecondaryButton(sender: Any){
         if let secondaryButtonAction = secondaryButtonAction{
             secondaryButtonAction()
         }
         dismissView(.secondaryButtonTapped)
-    }
-    
-    func calculateViewHeight() -> CGFloat{
-        var childHeight: CGFloat = 0
-        for child in view.subviews{
-            childHeight += child.frame.height
-        }
-        print(childHeight)
-        var height: Float = 80.0
-        if primaryButtonText != nil || secondaryButtonText != nil{
-            height = 200
-        }
-        return CGFloat(height)
     }
     
     func setupViewConstraints(){
