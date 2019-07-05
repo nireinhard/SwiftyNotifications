@@ -19,8 +19,9 @@ public class Notification{
     var parentVC: UIViewController?
     var theme: Theme? = nil
     var timeout: Int? = nil
-    var view: UIView = UIView()
+    var view: NotificationView = NotificationView()
     var completion: ((DismissType)->())? = nil
+    var topAnchor: NSLayoutConstraint?
     
     private lazy var dismissViewTimeoutReached = DispatchWorkItem(block: {
         self.dismissView(.timeoutReached)
@@ -83,6 +84,7 @@ public class Notification{
         }) { (finished) in
             if finished{
                 self.view.removeFromSuperview()
+                self.updateTopAnchor()
                 self.dismissViewTimeoutReached.cancel()
                 self.completion?(dismissType)
             }
@@ -204,11 +206,44 @@ public class Notification{
         dismissView(.secondaryButtonTapped)
     }
     
+    func updateTopAnchor(){
+        if let parentVC = parentVC{
+            let notificationViews = parentVC.view.subviews.filter({$0.isKind(of: NotificationView.self)})
+            print(notificationViews)
+            let con: CGFloat = 20
+            notificationViews.first?.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: con).isActive = true
+            for (i, view) in notificationViews.dropFirst().enumerated(){
+                view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: calculateTopAnchorPartial(notificationViews,i)).isActive = true
+                view.setNeedsLayout()
+                view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    func calculateTopAnchorPartial(_ notificationViews: [UIView], _ index: Int) -> CGFloat{
+        var topAnchor: CGFloat = 20
+        for i in 0...index{
+            topAnchor+=notificationViews[i].frame.height + 5
+        }
+        return topAnchor
+    }
+
+    func calculateTopAnchor() -> CGFloat{
+        let topAnchor: CGFloat = 20
+        if let parentVC = parentVC{
+            let marginBetweenNotifications: CGFloat = 5
+            return parentVC.view.subviews.filter({ $0.isKind(of: NotificationView.self) }).reduce(topAnchor, {$0 + $1.frame.height + marginBetweenNotifications})
+        }
+        return topAnchor
+    }
+    
     func setupViewConstraints(){
         if let parentVC = parentVC{
             parentVC.view.addSubview(view)
             view.translatesAutoresizingMaskIntoConstraints = false
-            view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+            let topAnchor = view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: calculateTopAnchor())
+            topAnchor.priority = UILayoutPriority(rawValue: 999)
+            topAnchor.isActive = true
             view.rightAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
             view.leftAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.setContentHuggingPriority(.init(1000), for: .vertical)
