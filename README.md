@@ -17,17 +17,22 @@ let notification = NotificationBuilder
             .setTimeout(20_000)
             .showIcon()
             .setCompletionHandler(completion: { (type) in
-                if type == .primaryButtonTapped{
-                    print("primary button tapped")
-                }
-                if type == .timeoutReached{
-                    print("timeout reached")
-                }
-                if type == .swipeUp{
-                    print("swipe up")
-                }
-                if type == .closeTapped{
-                    print("close tapped")
+                switch type{
+                case .closeTapped:
+                    // action
+                    break
+                case .primaryButtonTapped:
+                    // action
+                    break
+                case .secondaryButtonTapped:
+                    // action
+                    break
+                case .timeoutReached:
+                    // action
+                    break
+                case .swipeUp:
+                    // action
+                    break
                 }
             })
             .build()
