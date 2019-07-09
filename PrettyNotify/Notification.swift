@@ -22,10 +22,8 @@ public class Notification{
     var view: NotificationView = NotificationView()
     var completion: ((DismissType)->())? = nil
     var topAnchor: NSLayoutConstraint?
+    var dismissViewTimeoutReached: DispatchWorkItem?
     
-    private lazy var dismissViewTimeoutReached = DispatchWorkItem(block: {
-        self.dismissView(.timeoutReached)
-    })
     
     var contentStackView: UIStackView = {
         let stackView = UIStackView()
@@ -60,6 +58,10 @@ public class Notification{
         return button
     }()
     
+    deinit {
+        print("deinit notification")
+    }
+    
     public func show(){
         setupView()
         if let vc = parentVC{
@@ -70,7 +72,10 @@ public class Notification{
             }) { (finished) in
                 if finished{
                     if let timeout = self.timeout{
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(timeout), execute: self.dismissViewTimeoutReached)
+                        self.dismissViewTimeoutReached = DispatchWorkItem(block: {
+                            self.dismissView(.timeoutReached)
+                        })
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(timeout), execute: self.dismissViewTimeoutReached!)
                     }
                 }
             }
@@ -85,7 +90,8 @@ public class Notification{
             if finished{
                 self.view.removeFromSuperview()
                 self.updateTopAnchor()
-                self.dismissViewTimeoutReached.cancel()
+                self.dismissViewTimeoutReached?.cancel()
+                self.dismissViewTimeoutReached = nil
                 self.completion?(dismissType)
             }
         }
@@ -209,7 +215,7 @@ public class Notification{
     func updateTopAnchor(){
         if let parentVC = parentVC{
             let notificationViews = parentVC.view.subviews.filter({$0.isKind(of: NotificationView.self)})
-            print(notificationViews)
+
             let con: CGFloat = 20
             notificationViews.first?.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: con).isActive = true
             for (i, view) in notificationViews.dropFirst().enumerated(){
@@ -223,24 +229,26 @@ public class Notification{
     func calculateTopAnchorPartial(_ notificationViews: [UIView], _ index: Int) -> CGFloat{
         var topAnchor: CGFloat = 20
         for i in 0...index{
-            topAnchor+=notificationViews[i].frame.height + 5
+            topAnchor += notificationViews[i].frame.height + 5
         }
         return topAnchor
     }
 
     func calculateTopAnchor() -> CGFloat{
-        let topAnchor: CGFloat = 20
+        let baseTopOffset: CGFloat = 20
+        let marginBetweenNotifications: CGFloat = 5
         if let parentVC = parentVC{
-            let marginBetweenNotifications: CGFloat = 5
-            return parentVC.view.subviews.filter({ $0.isKind(of: NotificationView.self) }).reduce(topAnchor, {$0 + $1.frame.height + marginBetweenNotifications})
+            let notificationSubviews = parentVC.view.subviews.filter({ $0.isKind(of: NotificationView.self) })
+            return notificationSubviews.reduce(baseTopOffset, {$0 + ($1.frame.height > 0 ? $1.frame.height : -5) + marginBetweenNotifications})
         }
-        return topAnchor
+        return baseTopOffset
     }
     
     func setupViewConstraints(){
         if let parentVC = parentVC{
             parentVC.view.addSubview(view)
             view.translatesAutoresizingMaskIntoConstraints = false
+            print(calculateTopAnchor())
             let topAnchor = view.topAnchor.constraint(equalTo: parentVC.view.safeAreaLayoutGuide.topAnchor, constant: calculateTopAnchor())
             topAnchor.priority = UILayoutPriority(rawValue: 999)
             topAnchor.isActive = true

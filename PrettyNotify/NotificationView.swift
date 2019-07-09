@@ -10,5 +10,8 @@ import Foundation
 import UIKit
 
 class NotificationView: UIView{
+    deinit {
+        print("Notification deinit")
+    }
 }
 

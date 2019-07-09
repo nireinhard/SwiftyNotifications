@@ -9,70 +9,74 @@
 import Foundation
 
 public class NotificationBuilder{
-    static var notification: Notification = Notification()
+    var notification: Notification?
     
-    private init(){}
+    public init(){
+        self.notification = Notification()
+    }
     
-    public static func setTitle(_ title: String) -> NotificationBuilder.Type{
-        notification.title = title
+    public func setTitle(_ title: String) -> NotificationBuilder{
+        notification?.title = title
         return self
     }
     
-    public static func setSubtitle(_ subtitle: String) -> NotificationBuilder.Type{
-        notification.subtitle = subtitle
+    public func setSubtitle(_ subtitle: String) -> NotificationBuilder{
+        notification?.subtitle = subtitle
         return self
     }
     
-    public static func showIcon() -> NotificationBuilder.Type {
+    public func showIcon() -> NotificationBuilder {
         print("yet to be implemented...")
         return self
     }
     
-    public static func setCompletionHandler(completion: @escaping (DismissType)->()) -> NotificationBuilder.Type{
-        notification.completion = completion
+    public func setCompletionHandler(completion: @escaping (DismissType)->()) -> NotificationBuilder{
+        notification?.completion = completion
         return self
     }
     
-    public static func build() -> Notification{
-        if notification.timeout == nil{
-            notification.timeout = 10_000
+    public func build() -> Notification{
+        if notification?.timeout == nil{
+            notification?.timeout = 10_000
         }
         setCurrentViewController()
-        let n = self.notification
-        self.notification = Notification()
-        return n
+        if let notification = notification{
+            return notification
+        }else{
+            return Notification()
+        }
     }
     
-    public static func setTheme(_ theme: Theme) -> NotificationBuilder.Type{
-        notification.theme = theme
+    public func setTheme(_ theme: Theme) -> NotificationBuilder{
+        notification?.theme = theme
         return self
     }
     
-    public static func setTimeout(_ timeout: Int) -> NotificationBuilder.Type{
-        notification.timeout = timeout
+    public func setTimeout(_ timeout: Int) -> NotificationBuilder{
+        notification?.timeout = timeout
         return self
     }
     
-    public static func isDismissable() -> NotificationBuilder.Type{
-        notification.dismissGestureRecognizer()
+    public func isDismissable() -> NotificationBuilder{
+        notification?.dismissGestureRecognizer()
         return self
     }
     
-    public static func setPrimaryButton(text: String, action: @escaping ()->()) -> NotificationBuilder.Type{
-        notification.primaryButtonText = text
-        notification.primaryButtonAction = action
+    public func setPrimaryButton(text: String, action: @escaping ()->()) -> NotificationBuilder{
+        notification?.primaryButtonText = text
+        notification?.primaryButtonAction = action
         return self
     }
     
-    public static func setSecondaryButton(text: String, action: @escaping ()->()) -> NotificationBuilder.Type{
-        notification.secondaryButtonText = text
-        notification.secondaryButtonAction = action
+    public func setSecondaryButton(text: String, action: @escaping ()->()) -> NotificationBuilder{
+        notification?.secondaryButtonText = text
+        notification?.secondaryButtonAction = action
         return self
     }
     
-    static func setCurrentViewController() {
+    func setCurrentViewController() {
         if let rootView = UIApplication.shared.keyWindow?.rootViewController{
-            notification.parentVC = rootView
+            notification?.parentVC = rootView
         }
     }
 }
